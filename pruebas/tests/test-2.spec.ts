@@ -1,0 +1,74 @@
+import { test, expect } from '@playwright/test';
+
+test('test', async ({ page }) => {
+  await page.goto('http://localhost:3000/');
+  await page.getByRole('heading', { name: 'Inicia sesión' }).click();
+  await page.getByRole('textbox', { name: 'Correo' }).click();
+  await page.getByRole('textbox', { name: 'Contraseña' }).click();
+  await page.getByRole('textbox', { name: 'Correo' }).click();
+  await page.getByRole('textbox', { name: 'Correo' }).click();
+  await page.getByRole('textbox', { name: 'Correo' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Correo' }).fill('E');
+  await page.getByRole('textbox', { name: 'Correo' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Correo' }).fill('3estudiante');
+  await page.getByRole('textbox', { name: 'Correo' }).press('Alt+ControlOrMeta+@');
+  await page.getByRole('textbox', { name: 'Correo' }).fill('3estudiante');
+  await page.getByRole('textbox', { name: 'Correo' }).press('Alt+ControlOrMeta+@');
+  await page.getByRole('textbox', { name: 'Correo' }).fill('3estudiante@cafe.test');
+  await page.getByRole('textbox', { name: 'Correo' }).press('Tab');
+  await page.getByRole('textbox', { name: 'Contraseña' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Contraseña' }).fill('C');
+  await page.getByRole('textbox', { name: 'Contraseña' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Contraseña' }).fill('Cafetest2026');
+  await page.getByRole('button', { name: 'Iniciar sesión' }).click();
+  await page.getByRole('textbox', { name: 'Correo' }).click();
+  await page.getByRole('button', { name: 'Iniciar sesión' }).click();
+  await page.getByRole('button', { name: 'Iniciar sesión' }).click();
+  await page.getByRole('button', { name: 'Iniciar sesión' }).click({
+    clickCount: 3
+  });
+  await page.getByRole('textbox', { name: 'Contraseña' }).click();
+  await page.getByRole('textbox', { name: 'Correo' }).click();
+  await page.getByRole('textbox', { name: 'Correo' }).fill('estudiante@cafe.test');
+  await page.getByRole('textbox', { name: 'Correo' }).press('ArrowRight');
+  await page.getByRole('textbox', { name: 'Correo' }).press('ArrowRight');
+  await page.getByRole('textbox', { name: 'Correo' }).press('ArrowRight');
+  await page.getByRole('textbox', { name: 'Correo' }).press('ArrowRight');
+  await page.getByRole('textbox', { name: 'Correo' }).press('ArrowRight');
+  await page.getByRole('textbox', { name: 'Correo' }).press('ArrowRight');
+  await page.getByRole('textbox', { name: 'Correo' }).press('ArrowRight');
+  await page.getByRole('textbox', { name: 'Correo' }).press('ArrowRight');
+  await page.getByRole('textbox', { name: 'Correo' }).press('ArrowRight');
+  await page.getByRole('textbox', { name: 'Correo' }).press('ArrowRight');
+  await page.getByRole('textbox', { name: 'Correo' }).fill('estudiante3@cafe.test');
+  await page.getByRole('textbox', { name: 'Correo' }).press('Enter');
+  await page.getByRole('textbox', { name: 'Correo' }).fill('estudiante4@cafe.test');
+  await page.getByRole('textbox', { name: 'Contraseña' }).click({
+    clickCount: 3
+  });
+  await page.getByRole('textbox', { name: 'Contraseña' }).fill('');
+  await page.getByRole('textbox', { name: 'Contraseña' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Contraseña' }).fill('C');
+  await page.getByRole('textbox', { name: 'Contraseña' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Contraseña' }).fill('Cafe2026');
+  await page.getByRole('textbox', { name: 'Contraseña' }).press('Enter');
+  await page.getByRole('textbox', { name: 'Texto' }).click();
+  await page.getByLabel('Categoría Todas bebidas').selectOption('bebidas');
+  await page.getByRole('spinbutton', { name: 'Precio máximo' }).click();
+  await page.getByRole('spinbutton', { name: 'Precio máximo' }).fill('1234567');
+  await page.getByText('Espresso (bebidas): $').click();
+  await page.getByText('Latte (bebidas): $').click();
+  await page.getByRole('button', { name: 'Buscar' }).click();
+  await page.getByRole('textbox', { name: 'Texto' }).click();
+  await page.getByRole('textbox', { name: 'Texto' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Texto' }).fill('T');
+  await page.getByRole('textbox', { name: 'Texto' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Texto' }).press('Dead');
+  await page.getByRole('textbox', { name: 'Texto' }).fill('Té');
+  await page.getByRole('spinbutton', { name: 'Precio máximo' }).dblclick();
+  await page.getByRole('spinbutton', { name: 'Precio máximo' }).fill('8000');
+  await page.getByRole('button', { name: 'Buscar' }).click();
+  await page.getByText('Té verde (bebidas): $').click();
+  await page.getByText('Té verde (bebidas): $').click();
+  await page.getByRole('button', { name: 'Reseñas' }).click();
+});

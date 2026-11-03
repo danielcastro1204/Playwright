@@ -1,0 +1,34 @@
+import { test, expect } from '@playwright/test';
+
+test('test', async ({ page }) => {
+  await page.goto('http://localhost:3000/');
+  await page.getByRole('textbox', { name: 'Correo' }).click();
+  await page.getByRole('textbox', { name: 'Correo' }).fill('estudiante1');
+  await page.getByRole('textbox', { name: 'Correo' }).press('Alt+ControlOrMeta+@');
+  await page.getByRole('textbox', { name: 'Correo' }).fill('estudiante1@cafe.test');
+  await page.getByRole('textbox', { name: 'Correo' }).press('Tab');
+  await page.getByRole('textbox', { name: 'Contraseña' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Contraseña' }).fill('C');
+  await page.getByRole('textbox', { name: 'Contraseña' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Contraseña' }).fill('Cafe2026');
+  await page.getByRole('button', { name: 'Iniciar sesión' }).click();
+  await page.getByRole('button', { name: 'Reserva de mesa' }).click();
+  await page.getByRole('textbox', { name: 'Fecha' }).fill('2026-10-21');
+  await page.getByLabel('Hora 18:00 19:00 20:').selectOption('19:00');
+  await page.getByRole('spinbutton', { name: 'Personas' }).click();
+  await page.getByRole('spinbutton', { name: 'Personas' }).click();
+  await page.getByRole('spinbutton', { name: 'Personas' }).fill('2');
+  await page.getByRole('textbox', { name: 'Nombre' }).click();
+  await page.getByRole('textbox', { name: 'Nombre' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Nombre' }).fill('T');
+  await page.getByRole('textbox', { name: 'Nombre' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Nombre' }).fill('Tobi ');
+  await page.getByRole('textbox', { name: 'Nombre' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Nombre' }).fill('Tobi V');
+  await page.getByRole('textbox', { name: 'Nombre' }).press('CapsLock');
+  await page.getByRole('textbox', { name: 'Nombre' }).fill('Tobi Valens');
+  await page.getByRole('button', { name: 'Consultar disponibilidad' }).click();
+  await page.getByRole('button', { name: 'Reservar' }).click();
+  await page.getByRole('button', { name: 'Cancelar reserva' }).click();
+  await page.getByRole('button', { name: 'Reservar' }).click();
+});

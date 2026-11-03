@@ -1,0 +1,20 @@
+{
+  "name": "pruebas-22",
+  "version": "1.0.0",
+  "description": "Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.",
+  "main": "index.js",
+  "type": "module",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "playwright test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.5"
+  }
+}

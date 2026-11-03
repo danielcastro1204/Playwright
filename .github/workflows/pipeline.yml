@@ -1,0 +1,98 @@
+name: Pruebas de aceptación
+
+on:
+  push:
+    branches: [ 'main', 'develop' ]
+  pull_request:
+    branches: [ 'main', 'develop' ]
+  workflow_dispatch:
+    inputs:
+      testTag:
+        description: 'Tag a ejecutar (ej: @acceptanceTest o @Issue-2)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  pruebas-aceptacion:
+    runs-on: ubuntu-latest
+    env:
+      NODE_VERSION: '22'
+      # Manual con tag escrito: usa ese tag. Push, PR o campo vacío: @acceptanceTest
+      TAG: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.testTag) || '@acceptanceTest' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            app/package-lock.json
+            pruebas/package-lock.json
+
+      - name: Instalar dependencias de la app
+        working-directory: app
+        run: npm ci
+
+      - name: Instalar dependencias de las pruebas
+        working-directory: pruebas
+        run: npm ci
+
+      - name: Instalar Chromium
+        working-directory: pruebas
+        run: npx playwright install --with-deps chromium
+
+      - name: Run tests (with tag support)
+        id: test_execution
+        working-directory: pruebas
+        continue-on-error: true
+        # \b evita que @Issue-1 también ejecute @Issue-10
+        run: npx playwright test --grep "${TAG}\b"
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: pruebas/playwright-report
+          if-no-files-found: ignore
+
+      - name: Determine test status
+        if: always()
+        run: |
+          if [ "${{ steps.test_execution.outcome }}" = "success" ]; then
+            echo "TEST_RESULT=passed" >> "$GITHUB_ENV"
+          else
+            echo "TEST_RESULT=failed" >> "$GITHUB_ENV"
+          fi
+
+      - name: Update GitHub Issue with test results
+        if: always() && github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if [[ "$TAG" =~ Issue-([0-9]+) ]]; then
+            ISSUE="${BASH_REMATCH[1]}"
+            RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            gh label create "status:passed" --color 0E8A16 --force
+            gh label create "status:failed" --color D93F0B --force
+            gh issue edit "$ISSUE" --remove-label "status:passed" --remove-label "status:failed" || true
+            gh issue edit "$ISSUE" --add-label "status:$TEST_RESULT"
+            gh issue comment "$ISSUE" --body "Ejecución **$TEST_RESULT** para \`$TAG\`: $RUN_URL"
+          else
+            echo "El tag no es de tipo Issue-X, no se actualiza ningún Issue."
+          fi
+
+      - name: Fail workflow if tests failed
+        if: always() && env.TEST_RESULT == 'failed'
+        run: |
+          echo "❌ Tests failed during execution!"
+          exit 1
