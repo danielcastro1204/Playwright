@@ -67,6 +67,8 @@ export default defineConfig({
     command: 'npm start',
     cwd: '../app',
     url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
+    // En GitHub Actions el pipeline ya levantó la app: Playwright la reutiliza
+    // en lugar de intentar abrir otra en el puerto 3000
+    reuseExistingServer: true,
   },
 });

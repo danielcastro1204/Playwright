@@ -49,14 +49,34 @@ jobs:
         working-directory: pruebas
         run: npx playwright install --with-deps chromium
 
-      - name: Run tests (with tag support)
+      - name: Levantar la aplicación
+        working-directory: app
+        env:
+          PORT: 3000
+        # & la deja corriendo en segundo plano mientras siguen los demás pasos
+        run: nohup npm start > app.log 2>&1 &
+
+      - name: Esperar a que la aplicación responda
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:3000 > /dev/null; then
+              echo "La aplicación respondió en el intento $i"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "La aplicación no respondió en 30 segundos"
+          cat app/app.log
+          exit 1
+
+      # Sin continue-on-error: si una prueba falla, este paso falla y el job queda en rojo
+      - name: Ejecutar pruebas de aceptación
         id: test_execution
         working-directory: pruebas
-        continue-on-error: true
         # \b evita que @Issue-1 también ejecute @Issue-10
         run: npx playwright test --grep "${TAG}\b"
 
-      - name: Upload Playwright report
+      - name: Subir el reporte de Playwright
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -64,20 +84,12 @@ jobs:
           path: pruebas/playwright-report
           if-no-files-found: ignore
 
-      - name: Determine test status
-        if: always()
-        run: |
-          if [ "${{ steps.test_execution.outcome }}" = "success" ]; then
-            echo "TEST_RESULT=passed" >> "$GITHUB_ENV"
-          else
-            echo "TEST_RESULT=failed" >> "$GITHUB_ENV"
-          fi
-
       - name: Update GitHub Issue with test results
         if: always() && github.event_name == 'workflow_dispatch'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
+          TEST_RESULT: ${{ steps.test_execution.outcome == 'success' && 'passed' || 'failed' }}
         run: |
           if [[ "$TAG" =~ Issue-([0-9]+) ]]; then
             ISSUE="${BASH_REMATCH[1]}"
@@ -90,9 +102,3 @@ jobs:
           else
             echo "El tag no es de tipo Issue-X, no se actualiza ningún Issue."
           fi
-
-      - name: Fail workflow if tests failed
-        if: always() && env.TEST_RESULT == 'failed'
-        run: |
-          echo "❌ Tests failed during execution!"
-          exit 1
