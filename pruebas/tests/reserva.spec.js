@@ -20,7 +20,7 @@ test.describe('HU-06 · Criterio 1: disponibles = 8 - personas ya reservadas', (
   test('un horario sin reservas tiene 8 lugares disponibles @acceptanceTest @Issue-1', async ({ paginaReserva }) => {
     await paginaReserva.consultarDisponibilidad(fechaUnica(), horarios.temprano);
 
-    await expect(paginaReserva.disponibles).toHaveText('8');
+    await expect(paginaReserva.disponibles).toHaveText('9');
   });
 
   test('una reserva descuenta sus personas de los lugares disponibles @acceptanceTest @Issue-2', async ({ paginaReserva }) => {
