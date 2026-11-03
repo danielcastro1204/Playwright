@@ -17,13 +17,13 @@ test.describe('HU-06 · Bug inyectado: sobrecupo', () => {
 });
 
 test.describe('HU-06 · Criterio 1: disponibles = 8 - personas ya reservadas', () => {
-  test('un horario sin reservas tiene 8 lugares disponibles @acceptanceTest @Issue-1', async ({ paginaReserva }) => {
+  test('un horario sin reservas tiene 8 lugares disponibles @acceptanceTest @Issue-2', async ({ paginaReserva }) => {
     await paginaReserva.consultarDisponibilidad(fechaUnica(), horarios.temprano);
 
     await expect(paginaReserva.disponibles).toHaveText('8');
   });
 
-  test('una reserva descuenta sus personas de los lugares disponibles @acceptanceTest @Issue-2', async ({ paginaReserva }) => {
+  test('una reserva descuenta sus personas de los lugares disponibles @acceptanceTest @Issue-3', async ({ paginaReserva }) => {
     const fecha = fechaUnica();
 
     await paginaReserva.reservar({ fecha, hora: horarios.medio, personas: 3, nombre: cliente });
@@ -34,7 +34,7 @@ test.describe('HU-06 · Criterio 1: disponibles = 8 - personas ya reservadas', (
     await expect(paginaReserva.disponibles).toHaveText('5');
   });
 
-  test('varias reservas en el mismo horario se suman @acceptanceTest @Issue-3', async ({ paginaReserva }) => {
+  test('varias reservas en el mismo horario se suman @acceptanceTest @Issue-4', async ({ paginaReserva }) => {
     const fecha = fechaUnica();
 
     await paginaReserva.reservar({ fecha, hora: horarios.tarde, personas: 3, nombre: cliente });
@@ -46,7 +46,7 @@ test.describe('HU-06 · Criterio 1: disponibles = 8 - personas ya reservadas', (
     await expect(paginaReserva.disponibles).toHaveText('3');
   });
 
-  test('una reserva solo afecta su horario, no los demás @acceptanceTest @Issue-4', async ({ paginaReserva }) => {
+  test('una reserva solo afecta su horario, no los demás @acceptanceTest @Issue-5', async ({ paginaReserva }) => {
     const fecha = fechaUnica();
 
     await paginaReserva.reservar({ fecha, hora: horarios.temprano, personas: 4, nombre: cliente });
@@ -56,7 +56,7 @@ test.describe('HU-06 · Criterio 1: disponibles = 8 - personas ya reservadas', (
     await expect(paginaReserva.disponibles).toHaveText('8');
   });
 
-  test('reservar exactamente los lugares disponibles deja el horario en 0 @acceptanceTest @Issue-5', async ({ paginaReserva }) => {
+  test('reservar exactamente los lugares disponibles deja el horario en 0 @acceptanceTest @Issue-6', async ({ paginaReserva }) => {
     const fecha = fechaUnica();
 
     await paginaReserva.reservar({ fecha, hora: horarios.medio, personas: cupoPorHorario, nombre: cliente });
@@ -92,7 +92,7 @@ test.describe('HU-06 · Criterio 2: si las personas superan los lugares, muestra
     await expect(paginaReserva.disponibles).toHaveText('0');
   });
 
-  test('pide todos los campos antes de reservar @acceptanceTest @Issue-6', async ({ paginaReserva }) => {
+  test('pide todos los campos antes de reservar @acceptanceTest @Issue-7', async ({ paginaReserva }) => {
     await paginaReserva.reservar({ fecha: '', hora: horarios.temprano, personas: 2, nombre: cliente });
 
     await expect(paginaReserva.mensaje).toHaveText('Todos los campos son obligatorios');
@@ -101,7 +101,7 @@ test.describe('HU-06 · Criterio 2: si las personas superan los lugares, muestra
 });
 
 test.describe('HU-06 · Criterio 3: al cancelar, los lugares vuelven a estar disponibles', () => {
-  test('cancelar una reserva devuelve sus lugares @acceptanceTest @Issue-7', async ({ paginaReserva }) => {
+  test('cancelar una reserva devuelve sus lugares @acceptanceTest @Issue-8', async ({ paginaReserva }) => {
     const fecha = fechaUnica();
     await paginaReserva.reservar({ fecha, hora: horarios.medio, personas: 5, nombre: cliente });
     await expect(paginaReserva.mensaje).toHaveText('Reserva creada');
@@ -116,7 +116,7 @@ test.describe('HU-06 · Criterio 3: al cancelar, los lugares vuelven a estar dis
     await expect(paginaReserva.disponibles).toHaveText('8');
   });
 
-  test('después de cancelar se puede volver a reservar el horario completo @acceptanceTest @Issue-8', async ({ paginaReserva }) => {
+  test('después de cancelar se puede volver a reservar el horario completo @acceptanceTest @Issue-9', async ({ paginaReserva }) => {
     const fecha = fechaUnica();
     await paginaReserva.reservar({ fecha, hora: horarios.tarde, personas: cupoPorHorario, nombre: cliente });
     await expect(paginaReserva.mensaje).toHaveText('Reserva creada');
